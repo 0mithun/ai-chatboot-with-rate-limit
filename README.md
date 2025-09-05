@@ -82,6 +82,7 @@ DB_PORT=5432
 Execute the following commands to install dependencies, apply database migrations, and start the server:
 ```bash
 cd project-directory
+docker-compose up -d
 npm install
 npm start
 ```
