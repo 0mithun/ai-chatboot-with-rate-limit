@@ -71,7 +71,7 @@ router.post('/login', async (req, res, next) => {
     const { email, password } = value;
     
     const result = await connection.query(
-      'SELECT id, email, password FROM users WHERE email = $1',
+      'SELECT id, email, plan, password FROM users WHERE email = $1',
       [email]
     );
     
@@ -85,15 +85,16 @@ router.post('/login', async (req, res, next) => {
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+
+    const token = jwt.sign({ userId: user.id, plan: user.plan, }, process.env.JWT_SECRET, { expiresIn: Number(process.env.JWT_EXPIRES_IN || 3600) });
     
     res.json({
       message: 'Login successful',
       token,
       user: {
         id: user.id,
-        email: user.email
+        email: user.email,
+        plan: user.plan
       }
     });
   } catch (error) {

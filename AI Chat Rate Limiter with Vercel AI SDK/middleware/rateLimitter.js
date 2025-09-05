@@ -1,14 +1,16 @@
 import jwt from 'jsonwebtoken'
 
+import dotenv from 'dotenv'
+dotenv.config()
+
 const rateLimitWindowMs = 1000 * 60  * 60; // 1 hour
 const userTiers = {
   guest: { limit: 3 },
-  free: { limit: 3 },
-  premium: { limit: 5 },
+  free: { limit: 10 },
+  premium: { limit: 50 },
 };
 
 const requestTracker = {};
-
 const JWT_SECRET = process.env.JWT_SECRET
 
 
@@ -20,11 +22,13 @@ const rateLimitMiddleware = (req, res, next) => {
   let userId;
   let userTier;
 
+
   if (token) {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
-      userId = decoded.id;
-      userTier = userTiers[decoded.tier] || userTiers.guest;
+      
+      userId = decoded.userId;
+      userTier = userTiers[decoded.plan] || userTiers.guest;
     } catch (err) {
       userId = ip;
       userTier = userTiers.guest;
