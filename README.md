@@ -83,7 +83,7 @@ Execute the following commands to install dependencies, apply database migration
 ```bash
 cd project-directory
 npm install
-node star
+npm start
 ```
 
 ## Code overview
